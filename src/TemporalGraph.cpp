@@ -36,37 +36,35 @@ std::vector<int> TemporalGraph::dijkstra(int start) {
 }
 
 int TemporalGraph::findMinYear() {
-    std::vector<int> minYear(numVertices, INT_MAX);
     std::vector<int> dist(numVertices, INT_MAX);
-    dist[0] = 0;
-    minYear[0] = 0;
+    std::vector<int> yearReached(numVertices, INT_MAX);
+    yearReached[0] = 0;
 
     std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, std::greater<std::tuple<int, int, int>>> pq;
-    pq.push({0, 0, 0}); // {current year, current vertex, current distance}
+    pq.push({0, 0, 0}); // {current distance, current vertex, year}
 
     while (!pq.empty()) {
-        auto [currentYear, u, currentDistance] = pq.top();
+        auto [currentDistance, u, currentYear] = pq.top();
         pq.pop();
 
-        if (currentYear > minYear[u]) continue;
+        if (currentDistance > dist[u]) continue;
 
         for (const auto& edge : adjList[u]) {
             int v = edge.v;
             int year = edge.year;
             int length = edge.length;
 
-            if (year < minYear[v] || (year == minYear[v] && currentDistance + length < dist[v])) {
-                minYear[v] = year;
+            if (currentDistance + length < dist[v] || (currentDistance + length == dist[v] && year < yearReached[v])) {
                 dist[v] = currentDistance + length;
-                pq.push({year, v, dist[v]});
+                yearReached[v] = year;
+                pq.push({dist[v], v, year});
             }
         }
     }
 
-    int latestYear = *std::max_element(minYear.begin(), minYear.end());
+    int latestYear = *std::max_element(yearReached.begin(), yearReached.end());
     return latestYear;
 }
-
 
 int TemporalGraph::findMinYearAllReachable() {
     std::vector<Edge> edges;
