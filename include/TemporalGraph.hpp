@@ -15,6 +15,7 @@ public:
     void addEdge(int u, int v, int year, int length, int cost);
     std::vector<int> dijkstra(int start);
     int findMinYear();
+    int findMinYearAllReachable();
     int findMinCost();
 };
 

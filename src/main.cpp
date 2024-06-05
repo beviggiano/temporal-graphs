@@ -22,7 +22,7 @@ int main() {
     int minYear = graph.findMinYear();
     std::cout << minYear << std::endl;
     
-    int minYearAllReachable = graph.findMinYear();
+    int minYearAllReachable = graph.findMinYearAllReachable();
     std::cout << minYearAllReachable << std::endl;
     
     int minCost = graph.findMinCost();

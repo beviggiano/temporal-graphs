@@ -68,6 +68,42 @@ int TemporalGraph::findMinYear() {
 }
 
 
+int TemporalGraph::findMinYearAllReachable() {
+    std::vector<Edge> edges;
+    for (int u = 0; u < numVertices; ++u) {
+        for (const auto& edge : adjList[u]) {
+            edges.push_back(edge);
+        }
+    }
+
+    std::sort(edges.begin(), edges.end(), [](const Edge& a, const Edge& b) {
+        return a.year < b.year;
+    });
+
+    UnionFind uf(numVertices);
+    int yearAllReachable = 0;
+
+    for (const auto& edge : edges) {
+        uf.unionSets(edge.u, edge.v);
+        if (uf.find(0) == uf.find(edge.v)) {
+            yearAllReachable = edge.year;
+        }
+
+        bool allConnected = true;
+        for (int i = 1; i < numVertices; ++i) {
+            if (uf.find(0) != uf.find(i)) {
+                allConnected = false;
+                break;
+            }
+        }
+        if (allConnected) {
+            yearAllReachable = edge.year;
+            break;
+        }
+    }
+
+    return yearAllReachable;
+}
 
 int TemporalGraph::findMinCost() {
     std::vector<Edge> edges;
