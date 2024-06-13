@@ -98,7 +98,7 @@ public:
         yearReached[0] = 0;
 
         std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, std::greater<std::tuple<int, int, int>>> pq;
-        pq.push({0, 0, 0}); // {current distance, current vertex, year}
+        pq.push({0, 0, 0}); // {distância atual, vértice atual, ano}
 
         while (!pq.empty()) {
             auto [currentDistance, u, currentYear] = pq.top();
