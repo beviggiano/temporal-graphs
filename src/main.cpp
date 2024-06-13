@@ -4,16 +4,20 @@
 #include <algorithm>
 #include <climits>
 
+// Classe UnionFind implementa a estrutura de união e busca (Union-Find) para a gestão de conjuntos disjuntos
 class UnionFind {
 private:
-    std::vector<int> parent, rank;
+    std::vector<int> parent, rank;  // Vetores para armazenar os pais e as alturas dos nós
+
 public:
+    // Construtor inicializa o vetor 'parent' com cada elemento sendo seu próprio pai e 'rank' com zero
     UnionFind(int n) : parent(n), rank(n, 0) {
         for (int i = 0; i < n; ++i) {
             parent[i] = i;
         }
     }
 
+    // Método para encontrar o representante do conjunto de um elemento com compressão de caminho
     int find(int u) {
         if (u != parent[u]) {
             parent[u] = find(parent[u]);
@@ -21,6 +25,7 @@ public:
         return parent[u];
     }
 
+    // Método para unir dois conjuntos
     void unionSets(int u, int v) {
         int rootU = find(u);
         int rootV = find(v);
@@ -37,25 +42,30 @@ public:
     }
 };
 
+// Estrutura Edge representa uma aresta em um grafo temporal
 struct Edge {
-    int u, v, year, length, cost;
+    int u, v, year, length, cost;  // Vértices da aresta, ano, comprimento e custo
     Edge(int _u, int _v, int _year, int _length, int _cost) 
         : u(_u), v(_v), year(_year), length(_length), cost(_cost) {}
 };
 
+// Classe TemporalGraph implementa um grafo temporal com métodos para encontrar várias propriedades do grafo
 class TemporalGraph {
 private:
-    int numVertices;
-    std::vector<std::vector<Edge>> adjList;
+    int numVertices;  // Número de vértices no grafo
+    std::vector<std::vector<Edge>> adjList;  // Lista de adjacência para armazenar as arestas
 
 public:
+    // Construtor inicializa o grafo com n vértices
     TemporalGraph(int n) : numVertices(n), adjList(n) {}
 
+    // Método para adicionar uma aresta ao grafo
     void addEdge(int u, int v, int year, int length, int cost) {
         adjList[u].push_back(Edge(u, v, year, length, cost));
         adjList[v].push_back(Edge(v, u, year, length, cost));
     }
 
+    // Método que implementa o algoritmo de Dijkstra para encontrar as menores distâncias a partir de um vértice de início
     std::vector<int> dijkstra(int start) {
         std::vector<int> dist(numVertices, INT_MAX);
         std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
@@ -81,6 +91,7 @@ public:
         return dist;
     }
 
+    // Método para encontrar o ano mínimo em que todos os vértices podem ser alcançados a partir do vértice 0
     int findMinYear() {
         std::vector<int> dist(numVertices, INT_MAX);
         std::vector<int> yearReached(numVertices, INT_MAX);
@@ -112,6 +123,7 @@ public:
         return latestYear;
     }
 
+    // Método para encontrar o ano mínimo em que todos os vértices podem ser alcançados de qualquer vértice
     int findMinYearAllReachable() {
         std::vector<Edge> edges;
         for (int u = 0; u < numVertices; ++u) {
@@ -149,6 +161,7 @@ public:
         return yearAllReachable;
     }
 
+    // Método para encontrar o custo mínimo necessário para conectar todos os vértices
     int findMinCost() {
         std::vector<Edge> edges;
         for (int u = 0; u < numVertices; ++u) {
@@ -180,31 +193,35 @@ public:
     }
 };
 
-
 int main() {
     int N, M;
-    std::cin >> N >> M;
+    std::cin >> N >> M;  // Lê o número de vértices (N) e arestas (M)
     
-    TemporalGraph graph(N);
+    TemporalGraph graph(N);  // Cria um grafo temporal com N vértices
     
     for (int i = 0; i < M; ++i) {
         int u, v, year, length, cost;
-        std::cin >> u >> v >> year >> length >> cost;
-        graph.addEdge(u - 1, v - 1, year, length, cost); // Ajustando para 0-based index
+        std::cin >> u >> v >> year >> length >> cost;  // Lê os dados de cada aresta
+        graph.addEdge(u - 1, v - 1, year, length, cost);  // Adiciona a aresta ao grafo (ajustando índices para 0-based)
     }
     
-    std::vector<int> distances = graph.dijkstra(0); // Supondo que o palácio real está no vértice 0
+    // Executa o algoritmo de Dijkstra a partir do vértice 0
+    std::vector<int> distances = graph.dijkstra(0); 
     
+    // Imprime as distâncias mínimas a partir do vértice 0
     for (int dist : distances) {
         std::cout << dist << std::endl;
     }
     
+    // Encontra e imprime o ano mínimo em que todos os vértices são alcançáveis a partir do vértice 0
     int minYear = graph.findMinYear();
     std::cout << minYear << std::endl;
     
+    // Encontra e imprime o ano mínimo em que todos os vértices são alcançáveis a partir de qualquer vértice
     int minYearAllReachable = graph.findMinYearAllReachable();
     std::cout << minYearAllReachable << std::endl;
     
+    // Encontra e imprime o custo mínimo necessário para conectar todos os vértices
     int minCost = graph.findMinCost();
     std::cout << minCost << std::endl;
     
