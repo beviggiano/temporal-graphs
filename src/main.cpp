@@ -98,7 +98,7 @@ public:
         yearReached[0] = 0;
 
         std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, std::greater<std::tuple<int, int, int>>> pq;
-        pq.push({0, 0, 0}); // {distância atual, vértice atual, ano}
+        pq.push(std::make_tuple(0, 0, 0)); // {current distance, current vertex, year}
 
         while (!pq.empty()) {
             auto [currentDistance, u, currentYear] = pq.top();
@@ -114,7 +114,7 @@ public:
                 if (currentDistance + length < dist[v] || (currentDistance + length == dist[v] && year < yearReached[v])) {
                     dist[v] = currentDistance + length;
                     yearReached[v] = year;
-                    pq.push({dist[v], v, year});
+                    pq.push(std::make_tuple(dist[v], v, year));
                 }
             }
         }
