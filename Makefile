@@ -7,7 +7,7 @@ OBJDIR = obj
 BINDIR = bin
 SOURCES = $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS = $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
-TARGET = $(BINDIR)/tp1.out
+TARGET = $(BINDIR)/tp2.out
 
 # Regra padrão
 all: $(TARGET)
@@ -24,7 +24,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 # Regra para limpar arquivos compilados
 clean:
-	rm -f $(OBJDIR)/*.o $(BINDIR)/tp1.out
+	rm -f $(OBJDIR)/*.o $(BINDIR)/tp2.out
 
 # Regra para depurar o Makefile
 print-%  : ; @echo $* = $($*)
