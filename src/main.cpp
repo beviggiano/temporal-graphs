@@ -69,6 +69,7 @@ public:
     // Método que implementa o algoritmo de Dijkstra para encontrar as menores distâncias a partir de um vértice de início
     std::vector<int> dijkstra(int start) {
         std::vector<int> dist(numVertices, INT_MAX);
+        std::vector<bool> visited(numVertices, false);
         std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
 
         dist[start] = 0;
@@ -78,11 +79,14 @@ public:
             int u = pq.top().second;
             pq.pop();
 
+            if (visited[u]) continue;
+            visited[u] = true;
+
             for (const auto& edge : adjList[u]) {
                 int v = edge.v;
                 int length = edge.length;
 
-                if (dist[u] + length < dist[v]) {
+                if (!visited[v] && dist[u] + length < dist[v]) {
                     dist[v] = dist[u] + length;
                     pq.push({dist[v], v});
                 }
@@ -133,7 +137,9 @@ public:
         std::vector<Edge> edges;
         for (int u = 0; u < numVertices; ++u) {
             for (const auto& edge : adjList[u]) {
-                edges.push_back(edge);
+                if (u < edge.v) {
+                    edges.push_back(edge);
+                }
             }
         }
 
