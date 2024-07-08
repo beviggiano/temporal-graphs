@@ -3,6 +3,7 @@
 #include <queue>
 #include <algorithm>
 #include <climits>
+#include <tuple>
 
 // Classe UnionFind implementa a estrutura de união e busca (Union-Find) para a gestão de conjuntos disjuntos
 class UnionFind {
@@ -97,11 +98,15 @@ public:
         std::vector<int> yearReached(numVertices, INT_MAX);
         yearReached[0] = 0;
 
-        std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, std::greater<std::tuple<int, int, int>>> pq;
-        pq.push(std::make_tuple(0, 0, 0)); // {current distance, current vertex, year}
+        typedef std::tuple<int, int, int> T;
+        std::priority_queue<T, std::vector<T>, std::greater<T>> pq;
+        pq.push(T(0, 0, 0)); // {current distance, current vertex, year}
 
         while (!pq.empty()) {
-            auto [currentDistance, u, currentYear] = pq.top();
+            T top = pq.top();
+            int currentDistance = std::get<0>(top);
+            int u = std::get<1>(top);
+            int currentYear = std::get<2>(top);
             pq.pop();
 
             if (currentDistance > dist[u]) continue;
@@ -114,7 +119,7 @@ public:
                 if (currentDistance + length < dist[v] || (currentDistance + length == dist[v] && year < yearReached[v])) {
                     dist[v] = currentDistance + length;
                     yearReached[v] = year;
-                    pq.push(std::make_tuple(dist[v], v, year));
+                    pq.push(T(dist[v], v, year));
                 }
             }
         }
